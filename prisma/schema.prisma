@@ -1,0 +1,38 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String     @unique
+  email         String
+  name          String
+  image         String
+  bookmarks     Bookmark[]
+  authority     Authority? @relation(fields: [authorityName], references: [name])
+  authorityName String?
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  url        String   @unique
+  title      String
+  createTime DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+}
+
+model Cache {
+  id         String    @id @db.VarChar(512)
+  value      String?   @db.Text
+  expiryTime DateTime?
+}
+
+model Authority {
+  name  String @unique
+  users User[]
+}
