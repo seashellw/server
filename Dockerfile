@@ -1,11 +1,12 @@
-FROM node AS node
+FROM node:alpine AS node
 WORKDIR /root
+
+RUN apk add git
 
 COPY package.json ./
 COPY .npmrc ./
 
-RUN npm install -g pnpm
-RUN pnpm install
+RUN npm install -g pnpm && pnpm install
 
 COPY . ./
 

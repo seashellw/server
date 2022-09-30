@@ -1,11 +1,6 @@
 # 个人网站
 
-Next + TypeScript + MUI + Tailwind
-
-## 初次部署
-
-```shell
-pnpm install
-pnpm build
-pnpm pm2 start ./cmd/start-website.mjs
-```
+docker run -i -t --name test --dns 8.8.8.8 node:alpine
+apk add git
+pnpm tsx .\index.ts
+pnpm esbuild index.ts --bundle --platform=node --outfile=index.js
