@@ -1,5 +1,5 @@
+import { UserItem } from "interface/lib/user";
 import { prisma } from "../init";
-import { UserItem } from "interface";
 
 class BookmarkList {
   /**

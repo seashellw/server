@@ -1,7 +1,16 @@
 import { db } from "database";
-import { BookmarkListResponse } from "interface";
+import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
 import { useUserFromJWT } from "./user";
+
+export interface BookmarkListResponse extends BasicResponse {
+  list?: {
+    id: string;
+    url: string;
+    title: string;
+    createTime: string;
+  }[];
+}
 
 export default APIHandler<{}, BookmarkListResponse>(
   async (ctx) => {

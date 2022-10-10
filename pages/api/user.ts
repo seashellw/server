@@ -1,4 +1,4 @@
-import { UserItem, UserResponse } from "interface";
+import { UserItem, UserResponse } from "interface/lib/user";
 import { jwtVerify, SignJWT } from "jose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";

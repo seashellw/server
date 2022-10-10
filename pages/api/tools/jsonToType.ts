@@ -1,9 +1,6 @@
-import {
-  ToolsJsonToTypeRequest,
-  ToolsJsonToTypeResponse,
-} from "interface";
 import { format } from "prettier";
 import { APIHandler } from "util/tool";
+import { ToolsFormatResponse } from "./format";
 
 const JsonObjectToType = (jsonObject: any) => {
   let result = "";
@@ -39,6 +36,13 @@ const Index = (json: string) => {
     return "";
   }
 };
+
+export type ToolsJsonToTypeResponse = ToolsFormatResponse;
+
+export interface ToolsJsonToTypeRequest {
+  text: string;
+}
+
 
 export default APIHandler<
   ToolsJsonToTypeRequest,

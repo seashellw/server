@@ -1,4 +1,5 @@
-import { Page, UserItem } from "interface";
+import { UserItem } from "interface/lib/user";
+import { Page } from "interface/util";
 import { prisma } from "../init";
 
 class UserList {

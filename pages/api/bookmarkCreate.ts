@@ -1,7 +1,14 @@
 import { db } from "database";
-import { BookmarkCreateRequest, BookmarkCreateResponse } from "interface";
+import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
 import { useUserFromJWT } from "./user";
+
+export interface BookmarkCreateRequest {
+  url?: string;
+  title?: string;
+}
+
+export interface BookmarkCreateResponse extends BasicResponse {}
 
 export default APIHandler<BookmarkCreateRequest, BookmarkCreateResponse>(
   async (ctx) => {

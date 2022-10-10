@@ -1,6 +1,15 @@
-import { ToolsFormatRequest, ToolsFormatResponse } from "interface";
+import { BasicResponse } from "interface/util";
 import { format } from "prettier";
 import { APIHandler } from "util/tool";
+
+export interface ToolsFormatRequest {
+  text: string;
+  parser: string;
+}
+
+export interface ToolsFormatResponse extends BasicResponse {
+  text?: string;
+}
 
 export default APIHandler<ToolsFormatRequest, ToolsFormatResponse>(
   async (req) => {

@@ -1,9 +1,14 @@
 import { db } from "database";
-import {
-  BookmarkUpdateRequest,
-  BookmarkUpdateResponse,
-} from "interface";
+import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
+
+export interface BookmarkUpdateRequest {
+  id?: string;
+  url?: string;
+  title?: string;
+}
+
+export interface BookmarkUpdateResponse extends BasicResponse {}
 
 export default APIHandler<
   BookmarkUpdateRequest,

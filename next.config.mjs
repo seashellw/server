@@ -4,7 +4,6 @@
 const nextConfig = {
   reactStrictMode: true,
   basePath: "/server",
-  output: "standalone",
   compiler: {
     emotion: true,
   },

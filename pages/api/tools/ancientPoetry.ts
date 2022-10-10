@@ -1,7 +1,17 @@
-import { FileAuthorizationResponse } from "interface";
+import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
 
-export default APIHandler<{}, FileAuthorizationResponse>(
+export interface ToolsAncientPoetryResponse extends BasicResponse {
+  data: {
+    author: string;
+    content: string[];
+    title: string;
+    dynasty: string;
+  };
+}
+
+
+export default APIHandler<{}, ToolsAncientPoetryResponse>(
   async () => {
     let res = await fetch("https://v2.jinrishici.com/sentence", {
       headers: {

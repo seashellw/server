@@ -1,12 +1,5 @@
-FROM node:alpine AS node
+FROM seaes-docker.pkg.coding.net/seashellw/docker/server-base:latest
 WORKDIR /root
-
-RUN apk add git
-
-COPY package.json ./
-COPY .npmrc ./
-
-RUN npm install -g pnpm && pnpm install
 
 COPY . ./
 

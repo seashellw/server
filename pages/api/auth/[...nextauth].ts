@@ -1,5 +1,5 @@
 import { db } from "database";
-import { UserItem } from "interface";
+import { UserItem } from "interface/lib/user";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import { env } from "process";
@@ -21,13 +21,8 @@ export const signOption: NextAuthOptions = {
     signIn: env.VITE_LOGIN_PATH,
   },
   callbacks: {
-    async signIn({ user }) {
-      let res = await db.user.update({
-        ...user,
-        name: user.name || "",
-        email: user.email || "",
-        image: user.image || "",
-      });
+    async signIn({ user }: any) {
+      let res = await db.user.update(user);
       return !!res;
     },
     async session(data): Promise<Session> {

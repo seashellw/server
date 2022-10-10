@@ -1,9 +1,18 @@
 import { db } from "database";
-import { Page, UserListRequest, UserListResponse } from "interface";
+import { UserItem } from "interface/lib/user";
+import { BasicResponse, Page, PageOption } from "interface/util";
 import { ADMIN } from "util/const";
 import { APIHandler } from "util/tool";
 import { useUserFromJWT } from "./user";
 
+export interface UserListRequest {
+  page: PageOption;
+}
+
+export interface UserListResponse extends BasicResponse {
+  list?: UserItem[];
+  page?: PageOption;
+}
 export default APIHandler<UserListRequest, UserListResponse>(
   async (ctx) => {
     const { page } = ctx.data;

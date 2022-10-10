@@ -1,9 +1,12 @@
 import { APIHandler } from "util/tool";
 import { db } from "database";
-import {
-  BookmarkDeleteRequest,
-  BookmarkDeleteResponse,
-} from "interface";
+import { BasicResponse } from "interface/util";
+
+export interface BookmarkDeleteRequest {
+  id?: string;
+}
+
+export interface BookmarkDeleteResponse extends BasicResponse {}
 
 export default APIHandler<
   BookmarkDeleteRequest,

@@ -1,6 +1,10 @@
-import { FileAuthorizationResponse } from "interface";
 import { APIHandler } from "util/tool";
 import { getCOSMasterCredential } from "util/cos";
+
+export interface FileAuthorizationResponse {
+  ok: boolean;
+  tempKeys?: any;
+}
 
 export default APIHandler<{}, FileAuthorizationResponse>(
   async () => {

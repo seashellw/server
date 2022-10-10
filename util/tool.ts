@@ -1,5 +1,5 @@
 import CORS from "cors";
-import { BasicResponse } from "interface";
+import { BasicResponse } from "interface/util";
 import { NextApiRequest, NextApiResponse } from "next";
 import { HTTP_METHODS_TYPE } from "util/const";
 
