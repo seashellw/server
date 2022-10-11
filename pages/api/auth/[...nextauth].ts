@@ -2,7 +2,6 @@ import { db } from "database";
 import { UserItem } from "interface/lib/user";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
-import { env } from "process";
 
 declare module "next-auth" {
   interface Session {
@@ -18,7 +17,7 @@ export const signOption: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: env.VITE_LOGIN_PATH,
+    signIn: "/server/auth/signIn",
   },
   callbacks: {
     async signIn({ user }: any) {

@@ -1,5 +1,5 @@
-import { Avatar, Button, Typography } from "@mui/joy";
-import { IconBrandGithub, IconLogin, IconLogout } from "@tabler/icons";
+import { Button, Title } from "@mantine/core";
+import { IconBrandGithub } from "@tabler/icons";
 import { useAsyncEffect, useRequest } from "ahooks";
 import LogInCard from "components/LogInCard";
 import { fetchUser } from "interface/lib/user";
@@ -15,12 +15,7 @@ type Props = {
 };
 
 const setQuery = (query: { from?: string; action?: string }) => {
-  if (
-    query.from &&
-    typeof query.from === "string" &&
-    query.action &&
-    typeof query.action === "string"
-  ) {
+  if (query.from && query.action) {
     localStorage.setItem("from", query.from);
     localStorage.setItem("action", query.action);
   }
@@ -35,6 +30,21 @@ const readQuery = () => {
 const clearQuery = () => {
   localStorage.removeItem("from");
   localStorage.removeItem("action");
+};
+
+const UserName: React.FC<{ name: string | undefined | null }> = ({ name }) => {
+  if (!name) return null;
+  return (
+    <Title
+      order={4}
+      sx={{
+        marginBottom: "1rem",
+        textAlign: "center",
+      }}
+    >
+      {name}
+    </Title>
+  );
 };
 
 const SignIn: NextPage<Props> = ({ providers }) => {
@@ -102,25 +112,15 @@ const SignIn: NextPage<Props> = ({ providers }) => {
     }
   }, [logOut, router, user?.token]);
 
-  const Name = useMemo(() => {
-    if (user?.name) {
-      return (
-        <Typography level="h6" component="h1">
-          {user?.name}
-        </Typography>
-      );
-    } else {
-      return null;
-    }
-  }, [user?.name]);
-
   const LogInButton = useMemo(() => {
     if (!user?.id) {
       return (
         <Button
           onClick={handleLogIn}
-          startDecorator={<IconLogin />}
-          color="success"
+          gradient={{ from: "indigo", to: "cyan" }}
+          leftIcon={<IconBrandGithub />}
+          variant="gradient"
+          fullWidth
         >
           登录
         </Button>
@@ -134,8 +134,10 @@ const SignIn: NextPage<Props> = ({ providers }) => {
       return (
         <Button
           onClick={logOut}
-          startDecorator={<IconLogout />}
-          color={"danger"}
+          leftIcon={<IconBrandGithub />}
+          variant="gradient"
+          fullWidth
+          gradient={{ from: "orange", to: "red" }}
         >
           退出登录
         </Button>
@@ -146,10 +148,7 @@ const SignIn: NextPage<Props> = ({ providers }) => {
 
   return (
     <LogInCard>
-      <Avatar size="lg">
-        <IconBrandGithub />
-      </Avatar>
-      {Name}
+      <UserName name={user?.name} />
       {LogInButton}
       {LogOutButton}
       <Head>
