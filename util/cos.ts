@@ -1,3 +1,4 @@
+import COS from "cos-nodejs-sdk-v5";
 import { CredentialData, getCredential } from "qcloud-cos-sts";
 
 /**
@@ -33,10 +34,43 @@ export const getCOSMasterCredential =
             tempKeys.startTime = startTime;
           }
           if (err) {
-            console.log(err);
+            console.log("getCredential", err);
             resolve(null);
           }
           resolve(tempKeys);
         }
       );
     });
+
+const cos = new COS({
+  getAuthorization: function (_, callback) {
+    getCOSMasterCredential().then((res) => {
+      let tempKeys = res;
+      if (!tempKeys) return;
+      callback({
+        TmpSecretId: tempKeys.credentials.tmpSecretId,
+        TmpSecretKey: tempKeys.credentials.tmpSecretKey,
+        SecurityToken: tempKeys.credentials.sessionToken,
+        StartTime: tempKeys.startTime,
+        ExpiredTime: tempKeys.expiredTime,
+      });
+    });
+  },
+});
+
+const Bucket = "cache-1259243245";
+const Region = "ap-beijing";
+
+export const getCOSFileUrl = (key: string) =>
+  new Promise<string>((resolve) => {
+    cos.getObjectUrl(
+      {
+        Bucket,
+        Region,
+        Key: key,
+      },
+      function (_, data) {
+        resolve(data.Url || "");
+      }
+    );
+  });
