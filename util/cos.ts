@@ -75,6 +75,9 @@ export const getCOSFileUrl = (key: string) =>
     );
   });
 
+/**
+ * 通过流上传
+ */
 export const uploadFromStream = (data: {
   key: string;
   stream: NodeJS.ReadableStream;
