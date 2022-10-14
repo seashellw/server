@@ -74,3 +74,34 @@ export const getCOSFileUrl = (key: string) =>
       }
     );
   });
+
+export const uploadFromStream = (data: {
+  key: string;
+  stream: NodeJS.ReadableStream;
+  total: number;
+  onError: (err: string) => void;
+  // percent: 0-1
+  onProgress: (percent: number) => void;
+  onSuccessful: () => void;
+}) => {
+  cos.putObject(
+    {
+      Bucket,
+      Region,
+      Key: data.key,
+      StorageClass: "STANDARD",
+      Body: data.stream,
+      ContentLength: data.total,
+      onProgress: function (progressData) {
+        data.onProgress(progressData.percent);
+      },
+    },
+    function (err) {
+      if (err) {
+        data.onError(err.message);
+        return;
+      }
+      data.onSuccessful();
+    }
+  );
+};
