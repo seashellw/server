@@ -2,8 +2,9 @@
   "name": "server",
   "scripts": {
     "dev": "next dev -p 80",
-    "build": "prisma generate && next build",
-    "start": "next start -p 80"
+    "build": "next build",
+    "start": "next start -p 80",
+    "db:gen":"prisma generate"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
