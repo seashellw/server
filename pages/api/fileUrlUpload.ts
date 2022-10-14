@@ -2,6 +2,9 @@ import fetch from "node-fetch";
 import { APIHandler } from "util/tool";
 import { uploadFromStream } from "../../util/cos";
 
+/**
+ * 通过url上传到cos
+ */
 export const uploadFromUrl = (data: {
   url: string;
   key: string;
