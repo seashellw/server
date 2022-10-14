@@ -43,12 +43,11 @@ export interface FileUrlUploadRequest {
 }
 
 export default APIHandler<FileUrlUploadRequest, {}>(
-  async () => {
-    let fileURL =
-      "https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe";
+  async ({ data }) => {
+    const { url, key } = data;
     uploadFromUrl({
-      url: fileURL,
-      key: "marktext-setup.exe",
+      url: url,
+      key: key,
       onError: (err) => {
         console.log(err);
       },
