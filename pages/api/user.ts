@@ -9,7 +9,7 @@ import { signOption } from "./auth/[...nextauth]";
 
 const privateKey = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
-export const useUserFromJWT = async (ctx: {
+export const getUserFromJWT = async (ctx: {
   req: NextApiRequest;
 }): Promise<{
   user?: UserItem;
@@ -33,7 +33,7 @@ export const useUserFromJWT = async (ctx: {
   }
 };
 
-export const useUserFromSession = async (ctx: {
+export const getUserFromSession = async (ctx: {
   req: NextApiRequest;
   res: NextApiResponse;
 }): Promise<{
@@ -46,29 +46,25 @@ export const useUserFromSession = async (ctx: {
   return { user: session.user };
 };
 
-export default APIHandler<{}, UserResponse>(
-  async (ctx) => {
-    let { user, jwt } = await useUserFromJWT(ctx);
+export default APIHandler<{}, UserResponse>({
+  method: "GET",
+  handler: async (ctx) => {
+    let { user, jwt } = await getUserFromJWT(ctx);
 
     if (user) {
       return { ok: true, user, jwt };
     }
 
-    ({ user } = await useUserFromSession(ctx));
+    ({ user } = await getUserFromSession(ctx));
 
     if (!user) {
-      ctx.res.status(401);
-      return {
-        ok: false,
-      };
+      ctx.setStatus(401).end("用户未登录或令牌不正确");
+      return;
     }
 
     if (!privateKey) {
-      ctx.res.status(500);
-      return {
-        ok: false,
-        msg: "服务器未配置私钥",
-      };
+      ctx.setStatus(500).end("服务器未配置私钥");
+      return;
     }
 
     jwt = await new SignJWT(user)
@@ -76,7 +72,6 @@ export default APIHandler<{}, UserResponse>(
       .setIssuedAt()
       .sign(privateKey);
 
-    return { ok: true, user: user, jwt };
+    return { user: user, jwt };
   },
-  { method: "GET" }
-);
+});

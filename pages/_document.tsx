@@ -14,8 +14,12 @@ class MyDocument extends Document {
       <Html lang="zh-CN">
         <NextHead>
           <link
-            href="https://blog-1259243245.cos-website.ap-beijing.myqcloud.com/STATIC_RESOURCES/favicon.ico"
+            href="https://blog-1259243245.cos.ap-beijing.myqcloud.com/STATIC_RESOURCES/favicon.ico"
             rel="icon"
+          />
+          <link
+            rel="stylesheet"
+            href="https://blog-1259243245.cos.ap-beijing.myqcloud.com/STATIC_RESOURCES/font/font.css"
           />
         </NextHead>
         <body>

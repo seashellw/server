@@ -1,28 +1,24 @@
 import { APIHandler } from "util/tool";
 import { db } from "database";
-import { BasicResponse } from "interface/util";
 
 export interface BookmarkDeleteRequest {
   id?: string;
 }
 
-export interface BookmarkDeleteResponse extends BasicResponse {}
+export interface BookmarkDeleteResponse {}
 
-export default APIHandler<
-  BookmarkDeleteRequest,
-  BookmarkDeleteResponse
->(
-  async ({ data: { id } }) => {
+export default APIHandler<BookmarkDeleteRequest, BookmarkDeleteResponse>({
+  method: "POST",
+  handler: async ({ data: { id }, setStatus }) => {
     if (!id) {
-      return { ok: false };
+      setStatus(400);
+      return "id is required";
     }
     const bookmark = await db.bookmark.deleteOne(id);
     if (!bookmark) {
-      return { ok: false };
+      setStatus(404);
+      return;
     }
-    return { ok: true };
+    return;
   },
-  {
-    method: "POST",
-  }
-);
+});

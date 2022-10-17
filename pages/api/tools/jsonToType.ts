@@ -43,24 +43,14 @@ export interface ToolsJsonToTypeRequest {
   text: string;
 }
 
-
-export default APIHandler<
-  ToolsJsonToTypeRequest,
-  ToolsJsonToTypeResponse
->(
-  async (req) => {
-    const { text } = req.data;
+export default APIHandler<ToolsJsonToTypeRequest, ToolsJsonToTypeResponse>({
+  method: "POST",
+  handler: async (ctx) => {
+    const { text } = ctx.data;
     if (!text) {
-      return { ok: false, text: "" };
+      return { text: "" };
     }
-    try {
-      const result = Index(text);
-      return { ok: true, text: result };
-    } catch (e) {
-      return { ok: false };
-    }
+    const result = Index(text);
+    return { text: result };
   },
-  {
-    method: "POST",
-  }
-);
+});

@@ -1,33 +1,35 @@
 import { db } from "database";
 import { UserItem } from "interface/lib/user";
-import { BasicResponse, Page, PageOption } from "interface/util";
+import { Page, PageOption } from "interface/util";
 import { ADMIN } from "util/const";
 import { APIHandler } from "util/tool";
-import { useUserFromJWT } from "./user";
+import { getUserFromJWT } from "./user";
 
 export interface UserListRequest {
   page: PageOption;
 }
 
-export interface UserListResponse extends BasicResponse {
+export interface UserListResponse {
   list?: UserItem[];
   page?: PageOption;
 }
-export default APIHandler<UserListRequest, UserListResponse>(
-  async (ctx) => {
+export default APIHandler<UserListRequest, UserListResponse>({
+  method: "POST",
+  handler: async (ctx) => {
     const { page } = ctx.data;
-    const { user } = await useUserFromJWT(ctx);
+    const { user } = await getUserFromJWT(ctx);
     if (user?.authority !== ADMIN) {
-      return { ok: false, msg: "权限不足" };
+      ctx.setStatus(403);
+      return "权限不足";
     }
     const { current, pageSize } = page ?? {};
     if (!(current && pageSize)) {
-      return { ok: false };
+      ctx.setStatus(400);
+      return;
     }
     const newPage = new Page(current, pageSize);
     const userList = await db.user.selectAll(newPage);
     return {
-      ok: true,
       list: userList.map((user) => ({
         ...user,
         authorityName: undefined,
@@ -35,7 +37,4 @@ export default APIHandler<UserListRequest, UserListResponse>(
       page: newPage,
     };
   },
-  {
-    method: "POST",
-  }
-);
+});

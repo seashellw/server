@@ -10,23 +10,6 @@ class CacheList {
   }
 
   /**
-   * 插入
-   */
-  async create(id: string, data: { value: string; expiryTime: Date }) {
-    try {
-      return await prisma.cache.create({
-        data: {
-          id,
-          ...data,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }
-
-  /**
    * 删除
    */
   async delete(id: string) {
@@ -45,7 +28,7 @@ class CacheList {
   /**
    * 更新
    */
-  async update(id: string, data: { value: string; expiryTime: Date }) {
+  async upsert(id: string, data: { value: string; expiryTime: Date }) {
     try {
       return await prisma.cache.upsert({
         where: {
@@ -95,6 +78,25 @@ class CacheList {
       console.error(e);
       return null;
     }
+  }
+
+  async get(key: string) {
+    let res = await this.select(key);
+    if (!res) {
+      return null;
+    }
+    if ((res.expiryTime || 0) < new Date()) {
+      return null;
+    }
+    return res.value;
+  }
+
+  async set(id: string, data: { value: string; expiryTime?: Date }) {
+    return await this.upsert(id, {
+      ...data,
+      expiryTime:
+        data.expiryTime || new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+    });
   }
 }
 

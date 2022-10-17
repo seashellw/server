@@ -1,21 +1,28 @@
-import { BasicResponse, get, isBrowser, TOKEN_KEY } from "../util";
+import { isBrowser, TOKEN_KEY } from "../util";
+
 export interface UserItem {
-  [key: string]: string | undefined;
   id: string;
   image: string;
   name: string;
   email: string;
   authority?: string;
+
+  [key: string]: string | undefined;
 }
 
-
-export interface UserResponse extends BasicResponse {
+export interface UserResponse {
   user?: UserItem;
   jwt?: string;
 }
 
 export const fetchUser = async () => {
-  const res = await get<UserResponse, {}>("/user");
+  const res: UserResponse = await fetch("/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+    },
+  }).then((res) => res.json());
+
   if (isBrowser()) {
     localStorage.setItem(TOKEN_KEY, res?.jwt || "");
   }

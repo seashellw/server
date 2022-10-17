@@ -1,9 +1,8 @@
 import { db } from "database";
-import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
-import { useUserFromJWT } from "./user";
+import { getUserFromJWT } from "./user";
 
-export interface BookmarkListResponse extends BasicResponse {
+export interface BookmarkListResponse {
   list?: {
     id: string;
     url: string;
@@ -12,18 +11,20 @@ export interface BookmarkListResponse extends BasicResponse {
   }[];
 }
 
-export default APIHandler<{}, BookmarkListResponse>(
-  async (ctx) => {
-    const { user } = await useUserFromJWT(ctx);
+export default APIHandler<{}, BookmarkListResponse>({
+  method: "GET",
+  handler: async (ctx) => {
+    const { user } = await getUserFromJWT(ctx);
     if (!user) {
-      return { ok: false };
+      ctx.setStatus(401);
+      return "用户未登录或令牌不正确";
     }
     let list = await db.bookmark.selectByOwner(user);
     if (!list) {
-      return { ok: false };
+      ctx.setStatus(500);
+      return "查询异常";
     }
     return {
-      ok: true,
       list: list.map((item) => {
         return {
           ...item,
@@ -32,7 +33,4 @@ export default APIHandler<{}, BookmarkListResponse>(
       }),
     };
   },
-  {
-    method: "GET",
-  }
-);
+});

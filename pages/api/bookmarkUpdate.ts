@@ -1,5 +1,4 @@
 import { db } from "database";
-import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
 
 export interface BookmarkUpdateRequest {
@@ -8,14 +7,12 @@ export interface BookmarkUpdateRequest {
   title?: string;
 }
 
-export interface BookmarkUpdateResponse extends BasicResponse {}
+export interface BookmarkUpdateResponse {}
 
-export default APIHandler<
-  BookmarkUpdateRequest,
-  BookmarkUpdateResponse
->(
-  async (req) => {
-    let { url, title, id } = req.data;
+export default APIHandler<BookmarkUpdateRequest, BookmarkUpdateResponse>({
+  method: "POST",
+  handler: async (ctx) => {
+    let { url, title, id } = ctx.data;
     if (!id) {
       return { ok: false };
     }
@@ -30,7 +27,4 @@ export default APIHandler<
     }
     return { ok: true };
   },
-  {
-    method: "POST",
-  }
-);
+});

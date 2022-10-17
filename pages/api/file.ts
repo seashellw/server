@@ -5,8 +5,9 @@ interface FileDownloadRequest {
   key: string;
 }
 
-export default APIHandler<FileDownloadRequest, {}>(
-  async (ctx) => {
+export default APIHandler<FileDownloadRequest, {}>({
+  method: "GET",
+  handler: async (ctx) => {
     const { key } = ctx.data;
     if (!key) {
       ctx.res.status(400).send("key is required");
@@ -19,7 +20,4 @@ export default APIHandler<FileDownloadRequest, {}>(
     }
     ctx.res.redirect(url);
   },
-  {
-    method: "GET",
-  }
-);
+});

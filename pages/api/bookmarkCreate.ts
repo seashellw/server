@@ -1,7 +1,7 @@
 import { db } from "database";
 import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
-import { useUserFromJWT } from "./user";
+import { getUserFromJWT } from "./user";
 
 export interface BookmarkCreateRequest {
   url?: string;
@@ -21,7 +21,7 @@ export default APIHandler<BookmarkCreateRequest, BookmarkCreateResponse>(
     }
 
     title = title || url;
-    const { user } = await useUserFromJWT(ctx);
+    const { user } = await getUserFromJWT(ctx);
     if (!user) {
       return { ok: false };
     }
