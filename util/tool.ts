@@ -32,6 +32,7 @@ export function APIHandler<Request, Response>(option: {
         setStatus: (status) => res.status(status),
       });
       if (!handlerReturn) {
+        res.end();
         return;
       }
       if (typeof handlerReturn === "string") {

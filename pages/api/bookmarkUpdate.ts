@@ -14,7 +14,8 @@ export default APIHandler<BookmarkUpdateRequest, BookmarkUpdateResponse>({
   handler: async (ctx) => {
     let { url, title, id } = ctx.data;
     if (!id) {
-      return { ok: false };
+      ctx.setStatus(400);
+      return "id为必须";
     }
     url = url || undefined;
     title = title || undefined;
@@ -23,8 +24,8 @@ export default APIHandler<BookmarkUpdateRequest, BookmarkUpdateResponse>({
       title,
     });
     if (!bookmark) {
-      return { ok: false };
+      ctx.setStatus(500);
+      return "更新异常";
     }
-    return { ok: true };
   },
 });
