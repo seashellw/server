@@ -1,5 +1,4 @@
 import { db } from "database";
-import { BasicResponse } from "interface/util";
 import { APIHandler } from "util/tool";
 import { getUserFromJWT } from "./user";
 
@@ -8,30 +7,28 @@ export interface BookmarkCreateRequest {
   title?: string;
 }
 
-export interface BookmarkCreateResponse extends BasicResponse {}
-
-export default APIHandler<BookmarkCreateRequest, BookmarkCreateResponse>(
-  async (ctx) => {
+export default APIHandler<BookmarkCreateRequest, {}>({
+  method: "POST",
+  handler: async (ctx) => {
     let {
       data: { url, title },
     } = ctx;
 
     if (!url) {
-      return { ok: false };
+      ctx.setStatus(400);
+      return "请求参数错误";
     }
 
     title = title || url;
     const { user } = await getUserFromJWT(ctx);
     if (!user) {
-      return { ok: false };
+      ctx.setStatus(401);
+      return "用户未登录";
     }
     const bookmark = await db.bookmark.create(user, url, title);
     if (!bookmark) {
-      return { ok: false };
+      ctx.setStatus(500);
+      return "创建书签失败，可能有重复书签";
     }
-    return { ok: true };
   },
-  {
-    method: "POST",
-  }
-);
+});
