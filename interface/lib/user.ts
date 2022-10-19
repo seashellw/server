@@ -16,7 +16,7 @@ export interface UserResponse {
 }
 
 export const fetchUser = async () => {
-  const res: UserResponse = await fetch("/user", {
+  const res: UserResponse = await fetch("/server/api/user", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
