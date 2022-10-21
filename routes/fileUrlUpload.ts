@@ -1,8 +1,8 @@
-import { db } from "database";
-import { jsonParse } from "interface/util";
+import { db } from "@/database";
+import { jsonParse } from "@/interface/util";
+import { defineHandler, SE } from "@/util";
+import { uploadFromStream } from "@/util/cos";
 import fetch from "node-fetch";
-import { APIHandler } from "util/tool";
-import { uploadFromStream } from "../../util/cos";
 
 /**
  * 通过url上传到cos
@@ -55,8 +55,6 @@ interface CacheItem {
   message: string;
 }
 
-export interface FileUrlUploadResponse extends CacheItem {}
-
 const getKey = (key: string) => `fileUrlUpload:${key}`;
 
 const setCache = async (option: CacheItem) => {
@@ -73,40 +71,36 @@ const getCache: (key: string) => Promise<CacheItem | null> = async (key) => {
   return null;
 };
 
-export default APIHandler<FileUrlUploadRequest, FileUrlUploadResponse>({
-  method: "POST",
-  handler: async ({ data, setStatus }) => {
-    const { url, key } = data;
-    if (!url) {
-      let res = await getCache(key);
-      if (!res) {
-        setStatus(500);
-        return "未查询到相应任务";
-      }
-      return res;
+export default defineHandler(async (e) => {
+  const { url, key } = await useBody<FileUrlUploadRequest>(e);
+  if (!url) {
+    let res = await getCache(key);
+    if (!res) {
+      throw new SE(404, "未查询到相应任务");
     }
-    let item: CacheItem = {
-      key,
-      isError: false,
-      isSuccessful: false,
-      percent: 0,
-      message: "",
-    };
-    uploadFromUrl({
-      url: url,
-      key: key,
-      onError: (err) => {
-        item = { ...item, isError: true, isSuccessful: false, message: err };
-        setCache(item);
-      },
-      onProgress: async (percent) => {
-        item = { ...item, percent };
-        setCache(item);
-      },
-      onSuccessful: () => {
-        item = { ...item, isError: false, isSuccessful: true };
-        setCache(item);
-      },
-    });
-  },
+    return res;
+  }
+  let item: CacheItem = {
+    key,
+    isError: false,
+    isSuccessful: false,
+    percent: 0,
+    message: "",
+  };
+  uploadFromUrl({
+    url: url,
+    key: key,
+    onError: (err) => {
+      item = { ...item, isError: true, isSuccessful: false, message: err };
+      setCache(item);
+    },
+    onProgress: async (percent) => {
+      item = { ...item, percent };
+      setCache(item);
+    },
+    onSuccessful: () => {
+      item = { ...item, isError: false, isSuccessful: true };
+      setCache(item);
+    },
+  });
 });

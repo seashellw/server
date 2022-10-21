@@ -1,5 +1,6 @@
 import COS from "cos-nodejs-sdk-v5";
-import { CredentialData, getCredential } from "qcloud-cos-sts";
+import STS, { CredentialData } from "qcloud-cos-sts";
+const { getCredential } = STS;
 
 /**
  * 获取cos的sts管理员凭证

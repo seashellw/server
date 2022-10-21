@@ -29,7 +29,6 @@ class CacheList {
    * 更新
    */
   async upsert(id: string, data: { value: string; expiryTime: Date }) {
-    try {
       return await prisma.cache.upsert({
         where: {
           id,
@@ -42,9 +41,6 @@ class CacheList {
           ...data,
         },
       });
-    } catch (e) {
-      return null;
-    }
   }
 
   /**
@@ -66,18 +62,13 @@ class CacheList {
    * 清理过期的字段
    */
   async clear() {
-    try {
-      return await prisma.cache.deleteMany({
-        where: {
-          expiryTime: {
-            lt: new Date(),
-          },
+    return await prisma.cache.deleteMany({
+      where: {
+        expiryTime: {
+          lt: new Date(),
         },
-      });
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+      },
+    });
   }
 
   async get(key: string) {

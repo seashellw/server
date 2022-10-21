@@ -1,6 +1,5 @@
+import { defineHandler } from "@/util";
 import { format } from "prettier";
-import { APIHandler } from "util/tool";
-import { ToolsFormatResponse } from "./format";
 
 const JsonObjectToType = (jsonObject: any) => {
   let result = "";
@@ -37,20 +36,15 @@ const Index = (json: string) => {
   }
 };
 
-export type ToolsJsonToTypeResponse = ToolsFormatResponse;
-
 export interface ToolsJsonToTypeRequest {
   text: string;
 }
 
-export default APIHandler<ToolsJsonToTypeRequest, ToolsJsonToTypeResponse>({
-  method: "POST",
-  handler: async (ctx) => {
-    const { text } = ctx.data;
-    if (!text) {
-      return { text: "" };
-    }
-    const result = Index(text);
-    return { text: result };
-  },
+export default defineHandler(async (e) => {
+  const { text } = await useBody<ToolsJsonToTypeRequest>(e);
+  if (!text) {
+    return { text: "" };
+  }
+  const result = Index(text);
+  return { text: result };
 });

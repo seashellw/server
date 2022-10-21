@@ -1,83 +1,60 @@
-import { UserItem } from "interface/lib/user";
+import { UserItem } from "../../interface/lib/user";
 import { prisma } from "../init";
 
 class BookmarkList {
   /**
    * 插入书签
    */
-  async create(user: UserItem, url: string, title: string) {
-    try {
-      return await prisma.bookmark.create({
-        data: {
-          url,
-          title,
-          user: {
-            connect: {
-              id: user.id,
-            },
+  async create(data: { userId: string; url: string; title: string }) {
+    return await prisma.bookmark.create({
+      data: {
+        url: data.url,
+        title: data.title,
+        user: {
+          connect: {
+            id: data.userId,
           },
         },
-      });
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+      },
+    });
   }
 
   /**
    * 删除书签
    */
   async deleteOne(id: string) {
-    try {
-      return await prisma.bookmark.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+    return await prisma.bookmark.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   /**
    * 更新书签
    */
-  async updateOne(
-    id: string,
-    data: { title?: string; url?: string }
-  ) {
-    try {
-      return await prisma.bookmark.update({
-        where: {
-          id,
-        },
-        data: {
-          ...data,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+  async updateOne(id: string, data: { title?: string; url?: string }) {
+    return await prisma.bookmark.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+      },
+    });
   }
 
   /**
    * 查询
    */
-  async selectByOwner(user: UserItem) {
-    try {
-      return await prisma.bookmark.findMany({
-        where: {
-          user: {
-            id: user.id,
-          },
+  async selectByOwner(userId: string) {
+    return await prisma.bookmark.findMany({
+      where: {
+        user: {
+          id: userId,
         },
-      });
-    } catch (e) {
-      console.error(e);
-      return [];
-    }
+      },
+    });
   }
 }
 
