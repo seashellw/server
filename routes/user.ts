@@ -1,66 +1,33 @@
-import { db } from "@/database";
+import { tokenDB } from "@/database/token";
 import { UserItem } from "@/interface/lib/user";
-import { H3Event } from "h3";
-import { jwtVerify, SignJWT } from "jose";
-import { env } from "process";
 import { defineHandler, SE } from "@/util";
-import { TextEncoder } from "util";
+import { H3Event } from "h3";
 
-const privateKey = new TextEncoder().encode(env.NEXTAUTH_SECRET);
-
-export interface JwtPayload {
-  [key: string]: string | number | boolean;
-  id: string;
-  time: number;
-}
-
-export const getJwt = (e: H3Event) => {
-  let jwt = getHeader(e, "authorization");
-  jwt = jwt?.split(" ")[1];
-  if (!jwt) throw new SE(401, "未登录");
-  return jwt;
-};
-
-export const getPayloadFromJwt = async (
-  jwt: string
-): Promise<JwtPayload | undefined> => {
-  let { payload } = await jwtVerify(jwt, privateKey);
-  if (typeof payload?.id !== "string") {
-    throw new Error("令牌解析异常，令牌无效");
-  }
-  return payload as JwtPayload;
+export const useToken = (e: H3Event) => {
+  let token = getHeader(e, "authorization");
+  if (!token) throw new SE(401, "未登录");
+  return token;
 };
 
 export interface LogInState {
   user: UserItem;
-  jwt: string;
+
+  token: string;
 }
 
-export const getLogInState: (e: H3Event) => Promise<LogInState> = async (e) => {
-  const jwt = getJwt(e);
-  const payload = await getPayloadFromJwt(jwt);
-  const res = await db.cache.get(payload.id);
-  if (!res) throw new SE(401, "登录状态已过期");
-  let state = JSON.parse(res);
-  if (state.jwt !== jwt) {
-    throw new SE(401, "登录状态已过期");
-  }
+export const useLogInState: (e: H3Event) => Promise<LogInState> = async (e) => {
+  let token = useToken(e);
+  let item = await tokenDB.selectById(token);
+  if (!item) throw new SE(401, "登录状态已过期");
+  let state: LogInState = {
+    user: item.user,
+    token: item.id,
+  };
   return state;
 };
 
-export const createJwtFromUser = async (user: UserItem) => {
-  const payload: JwtPayload = {
-    id: user.id,
-    time: Date.now(),
-  };
-  const jwt = await new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .sign(privateKey);
-  return jwt;
-};
-
 export default defineHandler(async (e) => {
-  let { user } = await getLogInState(e);
+  let { user } = await useLogInState(e);
 
   if (user) {
     return { user };

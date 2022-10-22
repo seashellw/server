@@ -1,4 +1,4 @@
-import { db } from "@/database";
+import { bookmarkDB } from "@/database/bookmark";
 import { defineHandler, SE } from "@/util";
 
 export interface BookmarkDeleteRequest {
@@ -10,5 +10,5 @@ export default defineHandler(async (e) => {
   if (!id) {
     throw new SE(400, "id is required");
   }
-  await db.bookmark.deleteOne(id);
+  await bookmarkDB.delete(id);
 });

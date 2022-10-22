@@ -1,6 +1,6 @@
-import { db } from "@/database";
-import { defineHandler, SE } from "@/util";
-import { createJwtFromUser, LogInState } from "../user";
+import { tokenDB } from "@/database/token";
+import { userDB } from "@/database/user";
+import { defineHandler, getId, SE } from "@/util";
 import { GITHUB_ID } from "./logIn";
 
 const GITHUB_SECRET = process.env.GITHUB_SECRET;
@@ -34,7 +34,7 @@ export default defineHandler(async (e) => {
     throw new Error(JSON.stringify(result));
   }
 
-  const user = await db.user.update({
+  const user = await userDB.update({
     email: `${result.email}`,
     id: `${result.id}`,
     image: result.avatar_url,
@@ -43,20 +43,16 @@ export default defineHandler(async (e) => {
 
   let from = getCookie(e, "from");
   if (!from) {
-    throw new SE(400, "cookie 中不存在 form");
+    throw new SE(400, "未提供回调地址");
   }
-  let jwt = await createJwtFromUser(user);
-  const state: LogInState = {
-    user,
-    jwt,
-  };
-  await db.cache.set(user.id, {
-    value: JSON.stringify(state),
-    expiryTime: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30),
+  let tokenItem = await tokenDB.update({
+    user: user,
+    expiryTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    id: getId(),
+    updateTime: new Date(),
   });
-
-  setCookie(e, "token", jwt);
+  setCookie(e, "token", tokenItem.id);
   const url = new URL(from);
-  url.searchParams.set("token", jwt);
+  url.searchParams.set("token", tokenItem.id);
   await sendRedirect(e, url.toString());
 });

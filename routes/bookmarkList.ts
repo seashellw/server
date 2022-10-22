@@ -1,6 +1,6 @@
-import { db } from "@/database";
+import { bookmarkDB } from "@/database/bookmark";
 import { defineHandler, SE } from "@/util";
-import { getLogInState } from "./user";
+import { useLogInState } from "./user";
 
 export interface BookmarkListResponse {
   list?: {
@@ -12,8 +12,8 @@ export interface BookmarkListResponse {
 }
 
 export default defineHandler(async (e) => {
-  const { user } = await getLogInState(e);
-  let list = await db.bookmark.selectByOwner(user.id);
+  const { user } = await useLogInState(e);
+  const list = await bookmarkDB.selectByUser(user.id);
   let res: BookmarkListResponse = {
     list: list.map((item) => {
       return {

@@ -1,6 +1,6 @@
-import { getLogInState } from "./user";
+import { useLogInState } from "./user";
 import { defineHandler, SE } from "@/util";
-import { db } from "@/database";
+import { bookmarkDB } from "@/database/bookmark";
 
 export interface BookmarkCreateRequest {
   url?: string;
@@ -13,10 +13,6 @@ export default defineHandler(async (e) => {
     throw new SE(400, "url is required");
   }
   title = title || url;
-  const { user } = await getLogInState(e);
-  await db.bookmark.create({
-    userId: user.id,
-    url,
-    title,
-  });
+  const { user } = await useLogInState(e);
+  await bookmarkDB.create({ user, url, title });
 });

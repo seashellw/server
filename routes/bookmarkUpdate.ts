@@ -1,4 +1,4 @@
-import { db } from "@/database";
+import { bookmarkDB } from "@/database/bookmark";
 import { defineHandler, SE } from "@/util";
 
 export interface BookmarkUpdateRequest {
@@ -12,8 +12,5 @@ export default defineHandler(async (e) => {
   if (!id) {
     throw new SE(400, "id is required");
   }
-  await db.bookmark.updateOne(id, {
-    url: url || undefined,
-    title: title || undefined,
-  });
+  await bookmarkDB.updateOne(id, { url, title });
 });

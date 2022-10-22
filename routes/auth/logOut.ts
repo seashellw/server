@@ -1,20 +1,18 @@
-import { db } from "@/database";
+import { tokenDB } from "@/database/token";
 import { defineHandler, SE } from "@/util";
-import { getPayloadFromJwt } from "../user";
 
 export default defineHandler(async (e) => {
   const { from } = useQuery(e);
   if (typeof from !== "string") {
-    throw new SE(400, "参数错误");
+    throw new SE(400, "未提供回调地址");
   }
   const url = new URL(from);
-  let jwt = getCookie(e, "token");
-  if (!jwt) {
+  let token = getCookie(e, "token");
+  if (!token) {
     await sendRedirect(e, url.toString());
     return;
   }
   deleteCookie(e, "token");
-  const { id } = await getPayloadFromJwt(jwt);
-  await db.cache.delete(id);
+  await tokenDB.delete(token);
   await sendRedirect(e, url.toString());
 });

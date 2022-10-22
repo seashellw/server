@@ -1,18 +1,23 @@
-import { UserItem } from "../../interface/lib/user";
-import { prisma } from "../init";
+import { prisma } from "./init";
 
-class BookmarkList {
+class BookmarkDB {
   /**
    * 插入书签
    */
-  async create(data: { userId: string; url: string; title: string }) {
+  async create(data: {
+    user: {
+      id: string;
+    };
+    url: string;
+    title: string;
+  }) {
     return await prisma.bookmark.create({
       data: {
         url: data.url,
         title: data.title,
         user: {
           connect: {
-            id: data.userId,
+            id: data.user.id,
           },
         },
       },
@@ -22,7 +27,7 @@ class BookmarkList {
   /**
    * 删除书签
    */
-  async deleteOne(id: string) {
+  async delete(id: string) {
     return await prisma.bookmark.delete({
       where: {
         id,
@@ -47,7 +52,7 @@ class BookmarkList {
   /**
    * 查询
    */
-  async selectByOwner(userId: string) {
+  async selectByUser(userId: string) {
     return await prisma.bookmark.findMany({
       where: {
         user: {
@@ -58,4 +63,4 @@ class BookmarkList {
   }
 }
 
-export default new BookmarkList();
+export const bookmarkDB = new BookmarkDB();

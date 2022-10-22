@@ -1,4 +1,4 @@
-import { db } from "@/database";
+import { cacheDB } from "@/database/cache";
 import { jsonParse } from "@/interface/util";
 import { defineHandler, SE } from "@/util";
 import { uploadFromStream } from "@/util/cos";
@@ -15,10 +15,7 @@ export const uploadFromUrl = (data: {
   onProgress: (percent: number) => void;
   onSuccessful: () => void;
 }) => {
-  fetch(data.url, {
-    method: "GET",
-    headers: { "Content-Type": "application/octet-stream" },
-  })
+  fetch(data.url, { method: "GET" })
     .then((res) => {
       // 获取请求头中的文件大小数据
       let size = res.headers.get("content-length") || "";
@@ -58,13 +55,13 @@ interface CacheItem {
 const getKey = (key: string) => `fileUrlUpload:${key}`;
 
 const setCache = async (option: CacheItem) => {
-  await db.cache.set(getKey(option.key), {
+  await cacheDB.set(getKey(option.key), {
     value: JSON.stringify(option),
   });
 };
 
 const getCache: (key: string) => Promise<CacheItem | null> = async (key) => {
-  let cache = await db.cache.get(getKey(key));
+  let cache = await cacheDB.get(getKey(key));
   if (cache) {
     return jsonParse(cache);
   }

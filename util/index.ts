@@ -1,4 +1,5 @@
 import { H3Error } from "h3";
+import { nanoid } from "nanoid";
 
 export class SE extends H3Error {
   constructor(code: number, msg?: string) {
@@ -29,3 +30,5 @@ export const defineHandler: typeof defineEventHandler = (handler) =>
       }
     }
   });
+
+export const getId = () => nanoid();

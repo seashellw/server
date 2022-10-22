@@ -1,6 +1,6 @@
-import { prisma } from "../init";
+import { prisma } from "./init";
 
-class CacheList {
+class CacheDB {
   constructor() {
     setInterval(() => {
       this.clear().then(() => {
@@ -29,18 +29,18 @@ class CacheList {
    * 更新
    */
   async upsert(id: string, data: { value: string; expiryTime: Date }) {
-      return await prisma.cache.upsert({
-        where: {
-          id,
-        },
-        update: {
-          ...data,
-        },
-        create: {
-          id,
-          ...data,
-        },
-      });
+    return await prisma.cache.upsert({
+      where: {
+        id,
+      },
+      update: {
+        ...data,
+      },
+      create: {
+        id,
+        ...data,
+      },
+    });
   }
 
   /**
@@ -91,4 +91,4 @@ class CacheList {
   }
 }
 
-export default new CacheList();
+export const cacheDB = new CacheDB();
