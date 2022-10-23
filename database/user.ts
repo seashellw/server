@@ -21,7 +21,7 @@ class UserDB {
     });
     return {
       ...res,
-      authority: res?.authority?.name,
+      authority: res?.authority?.id,
     };
   }
 
@@ -40,7 +40,7 @@ class UserDB {
       });
       return {
         ...res,
-        authority: res?.authority?.name,
+        authority: res?.authority?.id,
       };
     } catch (e) {
       console.error(e);
@@ -62,7 +62,7 @@ class UserDB {
     });
     return res.map((item) => ({
       ...item,
-      authority: item.authority?.name,
+      authority: item.authority?.id,
     }));
   }
 }
