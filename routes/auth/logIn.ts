@@ -1,3 +1,4 @@
+import { tokenDB } from "@/database/token";
 import { defineHandler, SE } from "@/util";
 
 export const GITHUB_ID = process.env.GITHUB_ID;
@@ -11,10 +12,13 @@ export default defineHandler(async (e) => {
   setCookie(e, "from", from);
   let token = getCookie(e, "token");
   if (token) {
-    let url = new URL(from);
-    url.searchParams.set("token", token);
-    await sendRedirect(e, url.toString());
-    return;
+    let item = await tokenDB.selectById(token);
+    if (item) {
+      let url = new URL(from);
+      url.searchParams.set("token", token);
+      await sendRedirect(e, url.toString());
+      return;
+    }
   }
   let url = new URL("https://github.com/login/oauth/authorize");
   url.searchParams.set("client_id", GITHUB_ID);
