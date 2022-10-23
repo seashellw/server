@@ -1,4 +1,4 @@
-import { H3Error } from "h3";
+import { defineEventHandler, H3Error } from "h3";
 import { nanoid } from "nanoid";
 
 export class SE extends H3Error {
@@ -31,4 +31,4 @@ export const defineHandler: typeof defineEventHandler = (handler) =>
     }
   });
 
-export const getId = () => nanoid();
+export const getId = () => nanoid(64);
