@@ -4,7 +4,7 @@ import { defineHandler, SE } from "@/util";
 export default defineHandler(async (e) => {
   const { from } = useQuery(e);
   if (typeof from !== "string") {
-    throw newError(400, "未提供回调地址");
+    throw new SE(400, "未提供回调地址");
   }
   const url = new URL(from);
   let token = getCookie(e, "token");

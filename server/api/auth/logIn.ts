@@ -7,7 +7,7 @@ export const REDIRECT_URL = process.env.NEXTAUTH_URL;
 export default defineHandler(async (e) => {
   const { from } = useQuery(e);
   if (typeof from !== "string") {
-    throw newError(400, "参数错误");
+    throw new SE(400, "参数错误");
   }
   setCookie(e, "from", from);
   let token = getCookie(e, "token");

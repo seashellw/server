@@ -8,7 +8,7 @@ export interface BookmarkDeleteRequest {
 export default defineHandler(async (e) => {
   const { id } = await useBody<BookmarkDeleteRequest>(e);
   if (!id) {
-    throw newError(400, "id is required");
+    throw new SE(400, "id is required");
   }
   await bookmarkDB.delete(id);
 });
