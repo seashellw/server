@@ -10,7 +10,7 @@ export interface BookmarkUpdateRequest {
 export default defineHandler(async (e) => {
   const { id, url, title } = await useBody<BookmarkUpdateRequest>(e);
   if (!id) {
-    throw new SE(400, "id is required");
+    throw newError(400, "id is required");
   }
   await bookmarkDB.updateOne(id, { url, title });
 });

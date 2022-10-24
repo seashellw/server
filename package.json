@@ -1,8 +1,8 @@
 {
   "name": "server",
   "scripts": {
-    "dev": "dotenv -e .env nitropack dev",
-    "build": "dotenv -e .env nitropack build",
+    "dev": "nuxt dev",
+    "build": "nuxt build",
     "start": "dotenv -e .env node .output/server/index.mjs",
     "db:gen": "prisma generate",
     "db:studio": "prisma studio",
@@ -10,14 +10,14 @@
   },
   "dependencies": {
     "@prisma/client": "^4.5.0",
-    "@types/node": "^18.11.3",
+    "@types/node": "^18.11.4",
     "@types/prettier": "^2.7.1",
     "cos-nodejs-sdk-v5": "^2.11.14",
     "dotenv-cli": "^6.0.0",
     "h3": "^0.8.5",
     "nanoid": "^4.0.0",
-    "nitropack": "^0.6.0",
     "node-fetch": "^3.2.10",
+    "nuxt": "^3.0.0-rc.12",
     "prettier": "^2.7.1",
     "prisma": "^4.5.0",
     "qcloud-cos-sts": "^3.1.0"

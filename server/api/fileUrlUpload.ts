@@ -73,7 +73,7 @@ export default defineHandler(async (e) => {
   if (!url) {
     let res = await getCache(key);
     if (!res) {
-      throw new SE(404, "未查询到相应任务");
+      throw newError(404, "未查询到相应任务");
     }
     return res;
   }

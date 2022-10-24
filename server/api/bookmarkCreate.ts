@@ -10,7 +10,7 @@ export interface BookmarkCreateRequest {
 export default defineHandler(async (e) => {
   let { url, title } = await useBody<BookmarkCreateRequest>(e);
   if (!url) {
-    throw new SE(400, "url is required");
+    throw newError(400, "url is required");
   }
   title = title || url;
   const { user } = await useLogInState(e);
