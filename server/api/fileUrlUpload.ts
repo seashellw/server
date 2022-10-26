@@ -15,7 +15,10 @@ export const uploadFromUrl = (data: {
   onProgress: (percent: number) => void;
   onSuccessful: () => void;
 }) => {
-  fetch(data.url, { method: "GET" })
+  fetch(data.url, {
+    method: "GET",
+    headers: { "Content-Type": "application/octet-stream" },
+  })
     .then((res) => {
       // 获取请求头中的文件大小数据
       let size = res.headers.get("content-length") || "";
