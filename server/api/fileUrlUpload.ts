@@ -1,7 +1,7 @@
 import { cacheDB } from "@/database/cache";
 import { jsonParse } from "@/interface/util";
 import { defineHandler, SE } from "@/util";
-import { uploadFromStream } from "@/util/cos";
+import { ProgressInfo, uploadFromStream } from "@/util/cos";
 import fetch from "node-fetch";
 
 /**
@@ -11,8 +11,7 @@ export const uploadFromUrl = (data: {
   url: string;
   key: string;
   onError: (err: string) => void;
-  // percent: 0-1
-  onProgress: (percent: number) => void;
+  onProgress: (progressData: ProgressInfo) => void;
   onSuccessful: () => void;
 }) => {
   fetch(data.url, {
@@ -50,7 +49,7 @@ export interface FileUrlUploadRequest {
 interface CacheItem {
   key: string;
   state: "uploading" | "success" | "error";
-  percent: number;
+  progress: ProgressInfo;
   message: string;
 }
 
@@ -82,8 +81,13 @@ export default defineHandler(async (e) => {
   let item: CacheItem = {
     key,
     state: "uploading",
-    percent: 0,
     message: "",
+    progress: {
+      loaded: 0,
+      percent: 0,
+      speed: 0,
+      total: 0,
+    },
   };
   uploadFromUrl({
     url: url,
@@ -92,8 +96,8 @@ export default defineHandler(async (e) => {
       item = { ...item, state: "error", message: err };
       setCache(item);
     },
-    onProgress: (percent) => {
-      item = { ...item, percent };
+    onProgress: (p) => {
+      item = { ...item, progress: p };
       setCache(item);
     },
     onSuccessful: () => {

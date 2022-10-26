@@ -76,6 +76,8 @@ export const getCOSFileUrl = (key: string) =>
     );
   });
 
+export interface ProgressInfo extends COS.ProgressInfo {}
+
 /**
  * 通过流上传
  */
@@ -84,8 +86,7 @@ export const uploadFromStream = (data: {
   stream: NodeJS.ReadableStream;
   total: number;
   onError: (err: string) => void;
-  // percent: 0-1
-  onProgress: (percent: number) => void;
+  onProgress: (progressData: ProgressInfo) => void;
   onSuccessful: () => void;
 }) => {
   cos.putObject(
@@ -96,9 +97,7 @@ export const uploadFromStream = (data: {
       StorageClass: "STANDARD",
       Body: data.stream,
       ContentLength: data.total,
-      onProgress: function (progressData) {
-        data.onProgress(progressData.percent);
-      },
+      onProgress: data.onProgress,
     },
     function (err) {
       if (err) {
