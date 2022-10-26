@@ -46,8 +46,7 @@ export interface FileUrlUploadRequest {
 
 interface CacheItem {
   key: string;
-  isError: boolean;
-  isSuccessful: boolean;
+  state: "uploading" | "success" | "error";
   percent: number;
   message: string;
 }
@@ -79,8 +78,7 @@ export default defineHandler(async (e) => {
   }
   let item: CacheItem = {
     key,
-    isError: false,
-    isSuccessful: false,
+    state: "uploading",
     percent: 0,
     message: "",
   };
@@ -88,15 +86,15 @@ export default defineHandler(async (e) => {
     url: url,
     key: key,
     onError: (err) => {
-      item = { ...item, isError: true, isSuccessful: false, message: err };
+      item = { ...item, state: "error", message: err };
       setCache(item);
     },
-    onProgress: async (percent) => {
+    onProgress: (percent) => {
       item = { ...item, percent };
       setCache(item);
     },
     onSuccessful: () => {
-      item = { ...item, isError: false, isSuccessful: true };
+      item = { ...item, state: "success" };
       setCache(item);
     },
   });
