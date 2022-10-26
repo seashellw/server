@@ -1,14 +1,15 @@
 import { defineHandler, SE } from "@/util";
 import { getCOSFileUrl } from "@/util/cos";
+import { sendRedirect } from "h3";
 
 export default defineHandler(async (e) => {
-  const { key } = useQuery(e);
-  if (typeof key !== "string") {
-    throw new SE(400, "key is required");
+  const { key } = e.context.params;
+  if (!key) {
+    throw new SE(404, "Not Found");
   }
   const url = await getCOSFileUrl(key);
   if (!url) {
     throw new SE(404, "file not found");
   }
-  sendRedirect(e, url);
+  await sendRedirect(e, url);
 });
