@@ -2,7 +2,7 @@ import { cacheDB } from "@/database/cache";
 import { jsonParse } from "@/interface/util";
 import { defineHandler, SE } from "@/util";
 import { ProgressInfo, uploadFromStream } from "@/util/cos";
-import fetch from "node-fetch";
+import nodeFetch from "node-fetch";
 
 /**
  * 通过url上传到cos
@@ -14,7 +14,7 @@ export const uploadFromUrl = (data: {
   onProgress: (progressData: ProgressInfo) => void;
   onSuccessful: () => void;
 }) => {
-  fetch(data.url, {
+  nodeFetch(data.url, {
     method: "GET",
   })
     .then((res) => {
@@ -28,6 +28,7 @@ export const uploadFromUrl = (data: {
       }
       let total = parseInt(size);
       let stream = res.body;
+      console.log(typeof stream);
 
       uploadFromStream({
         ...data,
