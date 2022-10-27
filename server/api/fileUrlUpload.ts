@@ -16,16 +16,15 @@ export const uploadFromUrl = (data: {
 }) => {
   fetch(data.url, {
     method: "GET",
-    headers: { "Content-Type": "application/octet-stream" },
   })
     .then((res) => {
       // 获取请求头中的文件大小数据
       let size = res.headers.get("content-length") || "";
       if (!size) {
-        return;
+        throw new Error("获取文件大小失败");
       }
       if (!res.body) {
-        return;
+        throw new Error("获取文件流失败");
       }
       let total = parseInt(size);
       let stream = res.body;
@@ -89,6 +88,7 @@ export default defineHandler(async (e) => {
       total: 0,
     },
   };
+  setCache(item);
   uploadFromUrl({
     url: url,
     key: key,
