@@ -51,32 +51,25 @@ export default defineHandler(async (e) => {
       total: 0,
     },
   };
-  setCache(item);
+  await setCache(item);
   uploadFromUrl({
     url: url,
     key: key,
     onError: (err) => {
       item = { ...item, state: "error", message: err };
-      setTimeout(() => {
-        setCache(item);
-      }, 500);
+      setCache(item);
     },
     onDownloadProgress: (p) => {
       item = { ...item, progress: p, state: "prepare" };
       setCache(item);
     },
     onProgress: (p) => {
-      if (item.state === "success" || item.state === "error") {
-        return;
-      }
       item = { ...item, progress: p, state: "uploading" };
       setCache(item);
     },
     onSuccessful: () => {
       item = { ...item, state: "success" };
-      setTimeout(() => {
-        setCache(item);
-      }, 500);
+      setCache(item);
     },
   });
 });
