@@ -28,3 +28,4 @@ deploy.sh
 .nitro
 .output
 .nuxt
+tmp

@@ -1,5 +1,10 @@
 import COS from "cos-nodejs-sdk-v5";
+import { createWriteStream, existsSync, mkdirSync, rmSync } from "fs";
+import { join, throttle } from "lodash-es";
+import nodeFetch from "node-fetch";
+import { resolve } from "path";
 import STS, { CredentialData } from "qcloud-cos-sts";
+
 const { getCredential } = STS;
 
 /**
@@ -76,30 +81,34 @@ export const getCOSFileUrl = (key: string) =>
     );
   });
 
-export interface ProgressInfo extends COS.ProgressInfo {}
+export interface ProgressInfo {
+  loaded: number;
+  percent: number;
+  speed?: number;
+  total: number;
+}
 
 /**
  * 通过流上传
  */
-export const uploadFromStream = (data: {
+export const uploadFromPath = (data: {
   key: string;
-  stream: NodeJS.ReadableStream;
-  total: number;
+  path: string;
   onError: (err: string) => void;
   onProgress: (progressData: ProgressInfo) => void;
   onSuccessful: () => void;
+  onFinished: () => void;
 }) => {
-  cos.putObject(
+  cos.uploadFile(
     {
-      Bucket,
-      Region,
+      Bucket: Bucket,
+      Region: Region,
       Key: data.key,
-      StorageClass: "STANDARD",
-      Body: data.stream,
-      ContentLength: data.total,
+      FilePath: data.path,
       onProgress: data.onProgress,
     },
     function (err) {
+      data.onFinished();
       if (err) {
         data.onError(err.message);
         return;
@@ -107,4 +116,62 @@ export const uploadFromStream = (data: {
       data.onSuccessful();
     }
   );
+};
+
+/**
+ * 通过url上传到cos
+ */
+export const uploadFromUrl = (data: {
+  url: string;
+  key: string;
+  onError: (err: string) => void;
+  onDownloadProgress: (progress: ProgressInfo) => void;
+  onProgress: (progressData: ProgressInfo) => void;
+  onSuccessful: () => void;
+}) => {
+  data.onProgress = throttle(data.onProgress, 500);
+  data.onDownloadProgress = throttle(data.onDownloadProgress, 500);
+  nodeFetch(data.url, {
+    method: "GET",
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("远程下载文件失败，" + res.statusText);
+      }
+      const dir = join(resolve(), "tmp");
+      let total = parseInt(res.headers.get("content-length") || "0");
+      if (!total) {
+        throw new Error("远程下载文件失败，无法获取文件大小");
+      }
+      if (!existsSync(dir)) {
+        mkdirSync(dir);
+      }
+      const path = join(dir, encodeURIComponent(data.key));
+      const fileStream = res.body.pipe(createWriteStream(path));
+      let loaded = 0;
+      res.body.on("data", (chunk) => {
+        loaded += chunk.length;
+        data.onDownloadProgress({
+          loaded,
+          total,
+          percent: loaded / total,
+        });
+      });
+      fileStream
+        .on("finish", () => {
+          uploadFromPath({
+            ...data,
+            path,
+            onFinished: () => {
+              rmSync(path);
+            },
+          });
+        })
+        .on("error", () => {
+          data.onError("远程下载文件失败，文件流异常");
+        });
+    })
+    .catch((e) => {
+      data.onError(e.message);
+    });
 };

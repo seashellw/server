@@ -1,45 +1,7 @@
 import { cacheDB } from "@/database/cache";
 import { jsonParse } from "@/interface/util";
 import { defineHandler, SE } from "@/util";
-import { ProgressInfo, uploadFromStream } from "@/util/cos";
-import nodeFetch from "node-fetch";
-
-/**
- * 通过url上传到cos
- */
-export const uploadFromUrl = (data: {
-  url: string;
-  key: string;
-  onError: (err: string) => void;
-  onProgress: (progressData: ProgressInfo) => void;
-  onSuccessful: () => void;
-}) => {
-  nodeFetch(data.url, {
-    method: "GET",
-  })
-    .then((res) => {
-      // 获取请求头中的文件大小数据
-      let size = res.headers.get("content-length") || "";
-      if (!size) {
-        throw new Error("获取文件大小失败");
-      }
-      if (!res.body) {
-        throw new Error("获取文件流失败");
-      }
-      let total = parseInt(size);
-      let stream = res.body;
-      console.log(typeof stream);
-
-      uploadFromStream({
-        ...data,
-        stream,
-        total,
-      });
-    })
-    .catch((e) => {
-      data.onError(e.message);
-    });
-};
+import { ProgressInfo, uploadFromUrl } from "@/util/cos";
 
 export interface FileUrlUploadRequest {
   url?: string;
@@ -48,7 +10,7 @@ export interface FileUrlUploadRequest {
 
 interface CacheItem {
   key: string;
-  state: "uploading" | "success" | "error";
+  state: "prepare" | "uploading" | "success" | "error";
   progress: ProgressInfo;
   message: string;
 }
@@ -80,7 +42,7 @@ export default defineHandler(async (e) => {
   }
   let item: CacheItem = {
     key,
-    state: "uploading",
+    state: "prepare",
     message: "",
     progress: {
       loaded: 0,
@@ -95,15 +57,26 @@ export default defineHandler(async (e) => {
     key: key,
     onError: (err) => {
       item = { ...item, state: "error", message: err };
+      setTimeout(() => {
+        setCache(item);
+      }, 500);
+    },
+    onDownloadProgress: (p) => {
+      item = { ...item, progress: p, state: "prepare" };
       setCache(item);
     },
     onProgress: (p) => {
-      item = { ...item, progress: p };
+      if (item.state === "success" || item.state === "error") {
+        return;
+      }
+      item = { ...item, progress: p, state: "uploading" };
       setCache(item);
     },
     onSuccessful: () => {
       item = { ...item, state: "success" };
-      setCache(item);
+      setTimeout(() => {
+        setCache(item);
+      }, 500);
     },
   });
 });
