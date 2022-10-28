@@ -1,4 +1,4 @@
 import { PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient();
-
+global.prisma = global.prisma || new PrismaClient();
+export const prisma = global.prisma;

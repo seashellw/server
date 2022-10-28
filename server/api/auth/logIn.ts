@@ -1,11 +1,12 @@
 import { tokenDB } from "@/database/token";
 import { defineHandler, SE } from "@/util";
+import { getCookie, getQuery, sendRedirect, setCookie } from "h3";
 
 export const GITHUB_ID = process.env.GITHUB_ID;
 export const REDIRECT_URL = process.env.NEXTAUTH_URL;
 
 export default defineHandler(async (e) => {
-  const { from } = useQuery(e);
+  const { from } = getQuery(e);
   if (typeof from !== "string") {
     throw new SE(400, "参数错误");
   }

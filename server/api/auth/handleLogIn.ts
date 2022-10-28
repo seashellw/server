@@ -2,11 +2,12 @@ import { tokenDB } from "@/database/token";
 import { userDB } from "@/database/user";
 import { defineHandler, getId, SE } from "@/util";
 import { GITHUB_ID } from "./logIn";
+import { getCookie, getQuery, sendRedirect, setCookie } from "h3";
 
 const GITHUB_SECRET = process.env.GITHUB_SECRET;
 
 export default defineHandler(async (e) => {
-  const { code } = useQuery(e);
+  const { code } = getQuery(e);
   if (!code) {
     throw new SE(400, "参数错误");
   }

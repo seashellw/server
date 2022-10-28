@@ -1,8 +1,9 @@
 import { tokenDB } from "@/database/token";
 import { defineHandler, SE } from "@/util";
+import { deleteCookie, getCookie, getQuery, sendRedirect } from "h3";
 
 export default defineHandler(async (e) => {
-  const { from } = useQuery(e);
+  const { from } = getQuery(e);
   if (typeof from !== "string") {
     throw new SE(400, "未提供回调地址");
   }

@@ -1,7 +1,7 @@
 import { tokenDB } from "@/database/token";
 import { UserItem } from "@/interface/lib/user";
 import { defineHandler, SE } from "@/util";
-import { H3Event } from "h3";
+import { H3Event, getHeader } from "h3";
 
 export const useToken = (e: H3Event) => {
   let token = getHeader(e, "authorization");
