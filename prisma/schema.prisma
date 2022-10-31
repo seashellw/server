@@ -8,14 +8,13 @@ generator client {
 }
 
 model User {
-  id          String     @id
-  email       String
-  name        String
-  image       String
-  bookmarks   Bookmark[]
-  authority   Authority? @relation(fields: [authorityId], references: [id])
-  authorityId String?
-  tokens      Token[]
+  id        String     @id
+  email     String
+  name      String
+  image     String
+  bookmarks Bookmark[]
+  authority String?
+  tokens    Token[]
 }
 
 model Token {
@@ -39,9 +38,4 @@ model Cache {
   id         String    @id
   value      String?
   expiryTime DateTime?
-}
-
-model Authority {
-  id    String @id
-  users User[]
 }
