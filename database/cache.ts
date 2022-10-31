@@ -1,4 +1,5 @@
 import { prisma } from "./init";
+import destr from "destr";
 
 class CacheDB {
   constructor() {
@@ -7,55 +8,6 @@ class CacheDB {
         console.log("clear cache");
       });
     }, 1000 * 60 * 60 * 24);
-  }
-
-  /**
-   * 删除
-   */
-  async delete(id: string) {
-    try {
-      return await prisma.cache.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }
-
-  /**
-   * 更新
-   */
-  async upsert(id: string, data: { value: string; expiryTime: Date }) {
-    return await prisma.cache.upsert({
-      where: {
-        id,
-      },
-      update: {
-        ...data,
-      },
-      create: {
-        id,
-        ...data,
-      },
-    });
-  }
-
-  /**
-   * 查询
-   */
-  async select(id: string) {
-    try {
-      return await prisma.cache.findUnique({
-        where: {
-          id,
-        },
-      });
-    } catch (e) {
-      return null;
-    }
   }
 
   /**
@@ -72,21 +24,33 @@ class CacheDB {
   }
 
   async get(key: string) {
-    let res = await this.select(key);
+    let res = await prisma.cache.findUnique({
+      where: { id: key },
+    });
     if (!res) {
       return null;
     }
     if ((res.expiryTime || 0) < new Date()) {
       return null;
     }
-    return res.value;
+    return destr(res.value);
   }
 
-  async set(id: string, data: { value: string; expiryTime?: Date }) {
-    return await this.upsert(id, {
-      ...data,
-      expiryTime:
-        data.expiryTime || new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+  async set(id: string, data: { value: Object; expiryTime?: Date }) {
+    data.expiryTime ||= new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
+    const value = JSON.stringify(data.value);
+    return await prisma.cache.upsert({
+      where: {
+        id,
+      },
+      update: {
+        ...data,
+      },
+      create: {
+        id,
+        ...data,
+        value,
+      },
     });
   }
 }

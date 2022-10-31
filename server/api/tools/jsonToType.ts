@@ -1,4 +1,6 @@
 import { defineHandler } from "@/util";
+import destr from "destr";
+import { readBody } from "h3";
 import { format } from "prettier";
 
 const JsonObjectToType = (jsonObject: any) => {
@@ -24,7 +26,7 @@ const JsonObjectToType = (jsonObject: any) => {
 
 const Index = (json: string) => {
   try {
-    const jsonObject = JSON.parse(json);
+    const jsonObject = destr(json);
     let result = JsonObjectToType(jsonObject);
     result = `type JsonType = ${result};`;
     return format(result, {
@@ -41,7 +43,7 @@ export interface ToolsJsonToTypeRequest {
 }
 
 export default defineHandler(async (e) => {
-  const { text } = await useBody<ToolsJsonToTypeRequest>(e);
+  const { text } = await readBody<ToolsJsonToTypeRequest>(e);
   if (!text) {
     return { text: "" };
   }

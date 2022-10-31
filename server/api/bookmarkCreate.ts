@@ -1,6 +1,7 @@
 import { useLogInState } from "./user";
 import { defineHandler, SE } from "@/util";
 import { bookmarkDB } from "@/database/bookmark";
+import { readBody } from "h3";
 
 export interface BookmarkCreateRequest {
   url?: string;
@@ -8,7 +9,7 @@ export interface BookmarkCreateRequest {
 }
 
 export default defineHandler(async (e) => {
-  let { url, title } = await useBody<BookmarkCreateRequest>(e);
+  let { url, title } = await readBody<BookmarkCreateRequest>(e);
   if (!url) {
     throw new SE(400, "url is required");
   }

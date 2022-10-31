@@ -1,4 +1,5 @@
 import { defineHandler } from "@/util";
+import { readBody } from "h3";
 import { format } from "prettier";
 
 export interface ToolsFormatRequest {
@@ -7,7 +8,7 @@ export interface ToolsFormatRequest {
 }
 
 export default defineHandler(async (e) => {
-  const { text, parser } = await useBody<ToolsFormatRequest>(e);
+  const { text, parser } = await readBody<ToolsFormatRequest>(e);
   const result = format(text, {
     parser,
   });

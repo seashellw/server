@@ -4,14 +4,6 @@ export const isBrowser = () => {
   return typeof window !== "undefined";
 };
 
-export const jsonParse = (str: string | undefined | null) => {
-  try {
-    return JSON.parse(str || "{}");
-  } catch (error) {
-    return {};
-  }
-};
-
 export const TOKEN_KEY = "token";
 
 /**

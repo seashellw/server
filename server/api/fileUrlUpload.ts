@@ -1,7 +1,7 @@
 import { cacheDB } from "@/database/cache";
-import { jsonParse } from "@/interface/util";
 import { defineHandler, SE } from "@/util";
 import { ProgressInfo, uploadFromUrl } from "@/util/cos";
+import { readBody } from "h3";
 
 export interface FileUrlUploadRequest {
   url?: string;
@@ -19,20 +19,17 @@ const getKey = (key: string) => `fileUrlUpload:${key}`;
 
 const setCache = async (option: CacheItem) => {
   await cacheDB.set(getKey(option.key), {
-    value: JSON.stringify(option),
+    value: option,
   });
 };
 
 const getCache: (key: string) => Promise<CacheItem | null> = async (key) => {
   let cache = await cacheDB.get(getKey(key));
-  if (cache) {
-    return jsonParse(cache);
-  }
-  return null;
+  return cache || null;
 };
 
 export default defineHandler(async (e) => {
-  const { url, key } = await useBody<FileUrlUploadRequest>(e);
+  const { url, key } = await readBody<FileUrlUploadRequest>(e);
   if (!url) {
     let res = await getCache(key);
     if (!res) {

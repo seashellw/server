@@ -1,4 +1,5 @@
 import { bookmarkDB } from "@/database/bookmark";
+import { readBody } from "h3";
 import { defineHandler, SE } from "@/util";
 
 export interface BookmarkDeleteRequest {
@@ -6,7 +7,7 @@ export interface BookmarkDeleteRequest {
 }
 
 export default defineHandler(async (e) => {
-  const { id } = await useBody<BookmarkDeleteRequest>(e);
+  const { id } = await readBody<BookmarkDeleteRequest>(e);
   if (!id) {
     throw new SE(400, "id is required");
   }
