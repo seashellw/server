@@ -45,6 +45,7 @@ class CacheDB {
       },
       update: {
         ...data,
+        value,
       },
       create: {
         id,
