@@ -4,6 +4,7 @@ import { throttle } from "lodash-es";
 import { join, resolve } from "path";
 import STS, { CredentialData } from "qcloud-cos-sts";
 import { request } from "undici";
+import { parseISO } from "date-fns";
 
 const { getCredential } = STS;
 
@@ -173,3 +174,38 @@ export const uploadFromUrl = (data: {
       onError(err.message);
     });
 };
+
+export interface FileItem {
+  key: string;
+  // 上传时间
+  time: string;
+  // 文件大小：以字节为单位
+  size: string;
+}
+
+export const fetchFileList = (prefix: string) =>
+  new Promise<FileItem[] | undefined>((resolve) => {
+    cos.getBucket(
+      {
+        Bucket,
+        Region,
+        Prefix: prefix,
+      },
+      function (err: any, data: any) {
+        if (err) {
+          console.error(err);
+          resolve(undefined);
+          return;
+        }
+        let resList: FileItem[] = [];
+        for (const item of data.Contents) {
+          resList.push({
+            time: `${parseISO(item.LastModified).getTime()}`,
+            size: `${item.Size}`,
+            key: item.Key,
+          });
+        }
+        resolve(resList);
+      }
+    );
+  });
