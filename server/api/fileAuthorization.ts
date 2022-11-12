@@ -8,5 +8,7 @@ export default defineHandler(async () => {
   }
   return {
     tempKeys,
+    secretId: process.env.SECRET_ID ?? "",
+    secretKey: process.env.SECRET_KEY ?? "",
   };
 });
