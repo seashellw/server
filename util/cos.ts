@@ -65,8 +65,8 @@ const cos = new COS({
   },
 });
 
-const Bucket = "cache-1259243245";
-const Region = "ap-beijing";
+const Bucket = process.env.BUCKET || "";
+const Region = process.env.REGION || "";
 
 export const getCOSFileUrl = (key: string) =>
   new Promise<string>((resolve) => {
