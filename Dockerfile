@@ -1,7 +1,7 @@
 FROM node:alpine
 WORKDIR /root
 
-RUN curl -fsSL https://get.pnpm.io/install.sh | sh -
+RUN npm install -g pnpm && pnpm setup && source /root/.bashrc
 
 COPY ./package.json ./
 COPY ./.npmrc ./

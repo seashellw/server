@@ -1,5 +1,5 @@
 {
   "image": "node",
-  "postCreateCommand": "curl -fsSL https://get.pnpm.io/install.sh | sh - && pnpm install",
+  "postCreateCommand": "npm install -g pnpm && pnpm setup && source /root/.bashrc && pnpm install",
   "features": {}
 }

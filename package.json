@@ -9,20 +9,20 @@
     "db:push": "prisma db push"
   },
   "dependencies": {
-    "@prisma/client": "^4.5.0",
+    "@prisma/client": "^4.6.1",
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.11.9",
     "@types/prettier": "^2.7.1",
     "cos-nodejs-sdk-v5": "^2.11.15",
     "date-fns": "^2.29.3",
-    "destr": "^1.2.0",
+    "destr": "^1.2.1",
     "dotenv-cli": "^6.0.0",
     "h3": "^0.8.6",
     "lodash-es": "^4.17.21",
     "nanoid": "^4.0.0",
-    "nuxt": "^3.0.0-rc.13",
+    "nuxt": "^3.0.0-rc.14",
     "prettier": "^2.7.1",
-    "prisma": "^4.5.0",
+    "prisma": "^4.6.1",
     "qcloud-cos-sts": "^3.1.0",
     "undici": "^5.12.0"
   }
