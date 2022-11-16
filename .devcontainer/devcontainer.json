@@ -1,5 +1,5 @@
 {
   "image": "node",
-  "postCreateCommand": "npm install -g pnpm && pnpm setup && source /root/.bashrc && pnpm install",
+  "postCreateCommand":"bash ./.devcontainer/init.sh",
   "features": {}
 }

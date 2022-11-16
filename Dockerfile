@@ -1,7 +1,7 @@
 FROM node:alpine
 WORKDIR /root
 
-RUN npm install -g pnpm && pnpm setup && source /root/.bashrc
+RUN npm install -g pnpm
 
 COPY ./package.json ./
 COPY ./.npmrc ./
