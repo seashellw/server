@@ -1,5 +1,5 @@
 import { bookmarkDB } from "@/database/bookmark";
-import { defineHandler, SE } from "@/util";
+import { defineHandler } from "@/util";
 import { useLogInState } from "./user";
 
 export interface BookmarkListResponse {
