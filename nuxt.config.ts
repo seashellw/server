@@ -10,7 +10,7 @@ export default defineNuxtConfig({
       link: [
         {
           rel: "icon",
-          href: "https://cdn-1259243245.cos.ap-shanghai.myqcloud.com/gh/seashellw/seashellw/icon/favicon.ico",
+          href: "https://cdn.jsdelivr.net/gh/seashellw/seashellw/icon/favicon.ico",
         },
       ],
       title: "SERVER",
