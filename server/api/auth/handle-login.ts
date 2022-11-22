@@ -47,7 +47,10 @@ export default defineHandler(async (e) => {
     throw new SE(400, "未提供回调地址");
   }
   let tokenItem = await tokenDB.update({
-    user: user,
+    user: {
+      ...user,
+      authority: user.authority || undefined,
+    },
     expiryTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
     id: getId(),
     updateTime: new Date(),
