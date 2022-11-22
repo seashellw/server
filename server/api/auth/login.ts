@@ -22,7 +22,8 @@ export default defineHandler(async (e) => {
     }
   }
   let url = new URL("https://github.com/login/oauth/authorize");
+  if (!GITHUB_ID) throw new SE(500, "未配置 GITHUB_ID");
   url.searchParams.set("client_id", GITHUB_ID);
-  url.searchParams.set("redirect_uri", REDIRECT_URL + "/handleLogIn");
+  url.searchParams.set("redirect_uri", REDIRECT_URL + "/handle-logIn");
   await sendRedirect(e, url.toString());
 });
