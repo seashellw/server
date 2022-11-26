@@ -24,33 +24,36 @@ class CacheDB {
   }
 
   async get(key: string) {
-    let res = await prisma.cache.findUnique({
-      where: { id: key },
+    let res = await prisma.cache.findFirst({
+      where: { label: key },
+      orderBy: { updateTime: "desc" },
     });
-    if (!res) {
-      return null;
-    }
-    if ((res.expiryTime || 0) < new Date()) {
-      return null;
-    }
+    if (!res) return null;
     return destr(res.value);
   }
 
-  async set(id: string, data: { value: Object; expiryTime?: Date }) {
+  async getList(key: string) {
+    let res = await prisma.cache.findMany({
+      where: { label: key },
+      orderBy: { updateTime: "desc" },
+    });
+    return res.map((item) => {
+      return {
+        ...item,
+        value: destr(item.value),
+      };
+    });
+  }
+
+  async set(key: string, data: { value: Object; expiryTime?: Date }) {
     data.expiryTime ||= new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
     const value = JSON.stringify(data.value);
-    return await prisma.cache.upsert({
-      where: {
-        id,
-      },
-      update: {
-        ...data,
+    return await prisma.cache.create({
+      data: {
+        label: key,
         value,
-      },
-      create: {
-        id,
-        ...data,
-        value,
+        updateTime: new Date(),
+        expiryTime: data.expiryTime,
       },
     });
   }

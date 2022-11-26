@@ -41,7 +41,7 @@ export const getCOSMasterCredential =
             tempKeys.startTime = startTime;
           }
           if (err) {
-            console.log("getCredential", err);
+            console.log("getCredential", JSON.stringify(err));
             resolve(null);
           }
           resolve(tempKeys);
@@ -111,7 +111,7 @@ export const uploadFromPath = (data: {
     function (err) {
       data.onFinished();
       if (err) {
-        data.onError(err.message);
+        data.onError(JSON.stringify(err));
         return;
       }
       data.onSuccessful();
@@ -131,8 +131,8 @@ export const uploadFromUrl = (data: {
   onSuccessful: () => void;
 }) => {
   let { onError, onDownloadProgress, onProgress, onSuccessful } = data;
-  onProgress = throttle(data.onProgress, 500);
-  onDownloadProgress = throttle(data.onDownloadProgress, 500);
+  onProgress = throttle(data.onProgress, 800);
+  onDownloadProgress = throttle(data.onDownloadProgress, 800);
   onError = (e) => setTimeout(() => data.onError(e), 1000);
   onSuccessful = () => setTimeout(() => data.onSuccessful(), 1000);
 
