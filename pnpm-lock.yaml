@@ -13,6 +13,7 @@ specifiers:
   lodash-es: ^4.17.21
   nanoid: ^4.0.0
   nuxt: ^3.0.0
+  ofetch: ^1.0.0
   prettier: ^2.7.1
   prisma: ^4.6.1
   qcloud-cos-sts: ^3.1.0
@@ -31,6 +32,7 @@ dependencies:
   lodash-es: 4.17.21
   nanoid: 4.0.0
   nuxt: 3.0.0_qlrjpsxsew2dpnim3oci5ss6mi
+  ofetch: 1.0.0
   prettier: 2.7.1
   prisma: 4.6.1
   qcloud-cos-sts: 3.1.0

@@ -1,4 +1,4 @@
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { fetchFileList } from "@/util/cos";
 import { getQuery } from "h3";
 

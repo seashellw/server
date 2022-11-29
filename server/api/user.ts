@@ -1,6 +1,6 @@
 import { tokenDB } from "@/database/token";
 import { UserItem } from "@/interface/lib/user";
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { H3Event, getHeader } from "h3";
 
 export const useToken = (e: H3Event) => {

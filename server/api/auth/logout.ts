@@ -1,5 +1,5 @@
 import { tokenDB } from "@/database/token";
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { deleteCookie, getCookie, getQuery, sendRedirect } from "h3";
 
 export default defineHandler(async (e) => {

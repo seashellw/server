@@ -1,6 +1,6 @@
 import { bookmarkDB } from "@/database/bookmark";
 import { readBody } from "h3";
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 
 export interface BookmarkUpdateRequest {
   id?: string;

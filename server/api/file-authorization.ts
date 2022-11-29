@@ -1,4 +1,4 @@
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { Bucket, getCOSMasterCredential, Region } from "@/util/cos";
 
 export default defineHandler(async () => {

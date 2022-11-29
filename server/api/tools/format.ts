@@ -1,4 +1,4 @@
-import { defineHandler } from "@/util";
+import { defineHandler } from "@/util/util";
 import { readBody } from "h3";
 import { format } from "prettier";
 

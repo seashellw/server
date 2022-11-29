@@ -1,5 +1,5 @@
 import { cacheDB } from "@/database/cache";
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { ProgressInfo, uploadFromUrl } from "@/util/cos";
 import { readBody } from "h3";
 

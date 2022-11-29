@@ -1,4 +1,4 @@
-import { defineHandler } from "@/util";
+import { defineHandler } from "@/util/util";
 import { getCOSFileUrl } from "@/util/cos";
 import { getRouterParams, sendRedirect } from "h3";
 

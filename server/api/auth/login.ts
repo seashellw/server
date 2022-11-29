@@ -1,5 +1,5 @@
 import { tokenDB } from "@/database/token";
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { getCookie, getQuery, sendRedirect, setCookie } from "h3";
 
 export const GITHUB_ID = process.env.GITHUB_ID;

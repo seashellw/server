@@ -22,8 +22,8 @@ export const defineHandler = (handler: EventHandler) =>
         e.res.statusCode = err.statusCode;
         e.res.end(err.message);
         return;
-      } 
-      
+      }
+
       if (err instanceof Error) {
         e.res.statusCode = 500;
         e.res.end(err.message);
@@ -36,3 +36,18 @@ export const defineHandler = (handler: EventHandler) =>
   });
 
 export const getId = () => nanoid(64);
+
+export const useCacheFn: <T>(
+  fn: () => Promise<T>,
+  ms: number
+) => () => Promise<T> = (fn, ms) => {
+  let cache: any = null;
+  let time: number = 0;
+  return async () => {
+    if (Date.now() - time > ms) {
+      cache = await fn();
+      time = Date.now();
+    }
+    return cache;
+  };
+};

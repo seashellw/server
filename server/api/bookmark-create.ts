@@ -1,5 +1,5 @@
 import { useLogInState } from "./user";
-import { defineHandler, SE } from "@/util";
+import { defineHandler, SE } from "@/util/util";
 import { bookmarkDB } from "@/database/bookmark";
 import { readBody } from "h3";
 
