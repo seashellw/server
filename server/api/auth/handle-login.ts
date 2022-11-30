@@ -1,7 +1,7 @@
 import { tokenDB } from "@/database/token";
 import { userDB } from "@/database/user";
 import { defineHandler, getId, SE } from "@/util/util";
-import { ofetch } from "ofetch";
+import { fetch } from "undici";
 import { GITHUB_ID } from "./login";
 import { getCookie, getQuery, sendRedirect, setCookie } from "h3";
 
@@ -13,7 +13,7 @@ export default defineHandler(async (e) => {
     throw new SE(400, "参数错误");
   }
 
-  const { access_token: accessToken } = await ofetch(
+  const { access_token: accessToken } = await fetch(
     `https://github.com/login/oauth/access_token?client_id=${GITHUB_ID}&client_secret=${GITHUB_SECRET}&code=${code}`,
     {
       method: "POST",
@@ -22,15 +22,15 @@ export default defineHandler(async (e) => {
         Accept: "application/json",
       },
     }
-  );
+  ).then((res) => res.json() as any);
 
-  const result = await ofetch(`https://api.github.com/user`, {
+  const result = await fetch(`https://api.github.com/user`, {
     method: "GET",
     headers: {
       accept: "application/json",
       Authorization: `token ${accessToken}`,
     },
-  });
+  }).then((res) => res.json() as any);
 
   if (!result.login) {
     throw new Error(JSON.stringify(result));
