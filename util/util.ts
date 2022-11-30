@@ -12,6 +12,7 @@ export class SE extends H3Error {
 export const defineHandler = (handler: EventHandler) =>
   defineEventHandler(async (e) => {
     try {
+      console.log(e);
       let res = await handler(e);
       if (!res) {
         e.res.end();

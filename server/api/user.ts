@@ -20,7 +20,10 @@ export const useLogInState: (e: H3Event) => Promise<LogInState> = async (e) => {
   let item = await tokenDB.selectById(token);
   if (!item) throw new SE(401, "登录状态已过期");
   let state: LogInState = {
-    user: item.user,
+    user: {
+      ...item.user,
+      authority: item.user.authority || undefined,
+    },
     token: item.id,
   };
   return state;
