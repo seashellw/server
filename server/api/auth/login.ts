@@ -3,7 +3,7 @@ import { defineHandler, SE } from "@/util/util";
 import { getCookie, getQuery, sendRedirect, setCookie } from "h3";
 
 export const GITHUB_ID = process.env.GITHUB_ID;
-export const REDIRECT_URL = process.env.NEXTAUTH_URL;
+export const REDIRECT_URL = process.env.REDIRECT_URL;
 
 export default defineHandler(async (e) => {
   const { from } = getQuery(e);
