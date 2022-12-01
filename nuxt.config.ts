@@ -16,7 +16,5 @@ export default defineNuxtConfig({
       title: "SERVER",
     },
   },
-  routeRules: {
-    "/**": { cors: true },
-  },
+  routeRules: {},
 });
