@@ -41,7 +41,7 @@ export const getCOSMasterCredential =
             tempKeys.startTime = startTime;
           }
           if (err) {
-            console.log("getCredential", JSON.stringify(err));
+            console.error(err);
             resolve(null);
           }
           resolve(tempKeys);

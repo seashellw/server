@@ -26,7 +26,7 @@ const fetchData = useCacheFn(async () => {
   try {
     res = await getTopSearch();
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw new SE(500, `${e}`);
   }
   let list = destr(res)?.list;
