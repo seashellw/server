@@ -1,6 +1,5 @@
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {}
   },
