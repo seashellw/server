@@ -1,7 +1,8 @@
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {}
   },
-  "postCreateCommand": "bash ./.devcontainer/init.sh"
+  "postCreateCommand": "bash ./.devcontainer/setup.sh"
 }
