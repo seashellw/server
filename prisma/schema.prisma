@@ -41,3 +41,11 @@ model Cache {
   updateTime DateTime @default(now())
   expiryTime DateTime
 }
+
+model TopSearch {
+  id         String   @id @default(cuid())
+  title      String
+  url        String   @db.MediumText
+  type       String
+  updateTime DateTime @default(now())
+}

@@ -18,9 +18,7 @@ interface CacheItem {
 const getKey = (key: string) => `fileUrlUpload:${key}`;
 
 const setCache = async (option: CacheItem) => {
-  await cacheDB.set(getKey(option.key), {
-    value: option,
-  });
+  await cacheDB.set(getKey(option.key), option);
 };
 
 const getCache: (key: string) => Promise<CacheItem | null> = async (key) => {

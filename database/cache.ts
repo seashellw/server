@@ -45,15 +45,15 @@ class CacheDB {
     });
   }
 
-  async set(key: string, data: { value: Object; expiryTime?: Date }) {
-    data.expiryTime ||= new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
-    const value = JSON.stringify(data.value);
+  async set(key: string, data: Object, expiryTime?: Date) {
+    expiryTime ||= new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
+    const value = JSON.stringify(data);
     return await prisma.cache.create({
       data: {
         label: key,
         value,
         updateTime: new Date(),
-        expiryTime: data.expiryTime,
+        expiryTime,
       },
     });
   }
