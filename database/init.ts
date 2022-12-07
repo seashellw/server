@@ -15,22 +15,16 @@ export const downloadDatabase = async () => {
     cache: await prisma.cache.findMany(),
     token: await prisma.token.findMany(),
     user: await prisma.user.findMany(),
+    topSearch: await prisma.topSearch.findMany(),
   };
 };
 
 export const uploadDatabase = async (
   data: AsyncReturnType<typeof downloadDatabase>
 ) => {
-  await prisma.bookmark.createMany({
-    data: data.bookmark,
-  });
-  await prisma.cache.createMany({
-    data: data.cache,
-  });
-  await prisma.token.createMany({
-    data: data.token,
-  });
-  await prisma.user.createMany({
-    data: data.user,
-  });
+  await prisma.bookmark.createMany({ data: data.bookmark });
+  await prisma.cache.createMany({ data: data.cache });
+  await prisma.token.createMany({ data: data.token });
+  await prisma.user.createMany({ data: data.user });
+  await prisma.topSearch.createMany({ data: data.topSearch });
 };
