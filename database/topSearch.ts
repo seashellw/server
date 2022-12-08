@@ -1,7 +1,8 @@
-import { prisma } from "./init";
+import { setTotal } from "@/interface/page";
 import destr from "destr";
 import { request } from "undici";
-import { Page, setTotal } from "@/interface/page";
+import { cacheDB } from "./cache";
+import { prisma } from "./init";
 
 const fetchData = async (url: string) => {
   let res = await request(url, {
@@ -73,68 +74,84 @@ const getTopSearch = async () => {
   return res;
 };
 
+export const time24 = 1000 * 60 * 60 * 24;
+
 class TopSearchDB {
   constructor() {
-    this.fetch();
-    setInterval(() => {
-      this.fetch();
-    }, 1000 * 60 * 60 * 24);
+    cacheDB.get("top-search-update-time").then((res) => {
+      let time = parseInt(res?.time) || 0;
+      time = new Date().getTime() - time;
+      if (time > time24) {
+        this.fetch();
+        setInterval(() => this.fetch(), time24);
+      } else {
+        setTimeout(() => {
+          setInterval(() => this.fetch(), time24);
+        }, time24 - time);
+      }
+    });
   }
 
   async fetch() {
-    let count = await prisma.topSearch.count({
-      where: {
-        updateTime: {
-          gt: new Date(new Date().getTime() - 1000 * 60 * 60 * 23),
-        },
-      },
+    cacheDB.set("top-search-update-time", {
+      time: new Date().getTime(),
     });
-    if (!count) {
-      let res = await getTopSearch();
-      await prisma.topSearch.createMany({
-        data: res.map((item) => ({
-          ...item,
-        })),
+    let res = await getTopSearch();
+    for (let item of res) {
+      let old = await prisma.topSearch.findFirst({
+        where: {
+          title: item.title,
+          type: item.type,
+        },
       });
+      if (old) {
+        await prisma.topSearch.update({
+          where: {
+            id: old.id,
+          },
+          data: {
+            ...item,
+            updateTime: new Date(),
+          },
+        });
+      } else {
+        await prisma.topSearch.create({
+          data: {
+            ...item,
+          },
+        });
+      }
     }
   }
 
   async select(where: { type?: string; current?: number; pageSize?: number }) {
-    if (where.current && where.pageSize) {
-      const page: Page = {
-        current: where.current || 1,
-        pageSize: where.pageSize || 10,
-      };
-      let list = await prisma.topSearch.findMany({
-        where: {
-          type: where.type,
-          updateTime: {
-            gt: new Date(new Date().getTime() - 1000 * 60 * 60 * 24),
-          },
-        },
-      });
-      setTotal(page, list.length);
-      list = list.slice(
-        (page.current - 1) * page.pageSize,
-        page.current * page.pageSize
-      );
-      return {
-        list,
-        ...page,
-      };
-    } else {
-      let list = await prisma.topSearch.findMany({
-        where: {
-          type: where.type,
-          updateTime: {
-            gt: new Date(new Date().getTime() - 1000 * 60 * 60 * 24),
-          },
-        },
-      });
-      return {
-        list,
-      };
-    }
+    let { type, current, pageSize } = where;
+    type = type || undefined;
+    current = current || 1;
+    pageSize = pageSize || 100;
+    let total = await prisma.topSearch.count({
+      where: {
+        type,
+      },
+    });
+    let page = setTotal({ current, pageSize }, total);
+    let list = await prisma.topSearch.findMany({
+      where: {
+        type: where.type,
+      },
+      orderBy: {
+        updateTime: "desc",
+      },
+      skip: (page.current - 1) * page.pageSize,
+      take: page.pageSize,
+    });
+    return {
+      list: list.map((item) => ({
+        ...item,
+        updateTime: `${item.updateTime.getTime()}`,
+      })),
+      ...page,
+    };
   }
 }
 
