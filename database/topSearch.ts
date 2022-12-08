@@ -153,6 +153,13 @@ class TopSearchDB {
       ...page,
     };
   }
+
+  async selectType() {
+    let list = await prisma.topSearch.groupBy({
+      by: ["type"],
+    });
+    return list.map((item) => item.type);
+  }
 }
 
 export const topSearchDB = new TopSearchDB();
