@@ -1,4 +1,5 @@
 import { resolve } from "path";
+import socket from "./modules/socket";
 
 export default defineNuxtConfig({
   alias: {
@@ -17,4 +18,5 @@ export default defineNuxtConfig({
     },
   },
   routeRules: {},
+  modules: [socket],
 });
