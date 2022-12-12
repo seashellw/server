@@ -7,6 +7,7 @@ export default defineNuxtModule({
       const wsServer = new WebSocketServer({ server });
       nuxt.hook("close", () => wsServer.close());
       wsServer.on("connection", (ws) => {
+        console.log(ws);
         ws.on("message", (data) => {
           ws.send(data.toString() + " hello");
         });
