@@ -13,7 +13,6 @@
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.11.13",
     "@types/prettier": "^2.7.1",
-    "@types/ws": "^8.5.3",
     "cos-nodejs-sdk-v5": "^2.11.18",
     "date-fns": "^2.29.3",
     "destr": "^1.2.2",
@@ -25,7 +24,6 @@
     "prettier": "^2.8.1",
     "prisma": "^4.7.1",
     "qcloud-cos-sts": "^3.1.0",
-    "undici": "^5.14.0",
-    "ws": "^8.11.0"
+    "undici": "^5.14.0"
   }
 }
