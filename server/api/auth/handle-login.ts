@@ -10,7 +10,7 @@ const GITHUB_SECRET = process.env.GITHUB_SECRET;
 export default defineHandler(async (e) => {
   const { code } = getQuery(e);
   if (!code) {
-    throw new SE(400, "参数错误");
+    throw new SE(400, "code is required");
   }
 
   const { access_token: accessToken } = await fetch(
@@ -45,7 +45,7 @@ export default defineHandler(async (e) => {
 
   let from = getCookie(e, "from");
   if (!from) {
-    throw new SE(400, "未提供回调地址");
+    throw new SE(400, "no from in cookie");
   }
   let tokenItem = await tokenDB.update({
     user: {
